@@ -1,0 +1,861 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lola's Full Weekly Plan</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500;600&display=swap');
+
+:root {
+–bg: #FEF8F3;
+–peach: #F4A97F;
+–coral: #E8735A;
+–teal: #5AABA0;
+–gold: #D4A84B;
+–lavender: #C9B8D8;
+–blush: #F2D4C8;
+–purple: #8B6FAE;
+–green: #7BBF6A;
+–dark: #2A1F1A;
+–muted: #9C8880;
+–card-bg: #FFFAF6;
+–border: #EDE0D4;
+}
+
+- { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: var(–bg); font-family: ‘DM Sans’, sans-serif; color: var(–dark); min-height: 100vh; }
+
+.header { padding: 40px 28px 24px; border-bottom: 1px solid var(–border); }
+.eyebrow { font-size: 10px; letter-spacing: 0.22em; text-transform: uppercase; color: var(–coral); font-weight: 600; margin-bottom: 6px; }
+.header h1 { font-family: ‘Playfair Display’, serif; font-size: clamp(26px, 5vw, 42px); line-height: 1.1; }
+.header h1 em { color: var(–coral); font-style: italic; }
+.header p { font-size: 13px; color: var(–muted); font-weight: 300; margin-top: 8px; }
+
+/* NAV TABS */
+.tab-nav { padding: 16px 28px; display: flex; align-items: center; gap: 8px; border-bottom: 1px solid var(–border); flex-wrap: wrap; }
+.tab-nav .label { font-size: 12px; font-weight: 500; color: var(–muted); letter-spacing: 0.08em; margin-right: 4px; }
+.tab-btn { padding: 7px 20px; border-radius: 100px; border: 1.5px solid var(–border); background: transparent; font-family: ‘DM Sans’, sans-serif; font-size: 12px; font-weight: 500; cursor: pointer; color: var(–muted); transition: all 0.2s; }
+.tab-btn.active { background: var(–coral); border-color: var(–coral); color: white; }
+.tab-btn.meals-active { background: var(–green); border-color: var(–green); color: white; }
+.divider-dot { color: var(–border); font-size: 16px; line-height: 1; }
+
+/* VIEWS */
+.view { display: none; }
+.view.visible { display: block; }
+
+/* SCHEDULE */
+.schedule { display: none; padding: 20px 16px; flex-direction: column; gap: 14px; }
+.schedule.visible { display: flex; }
+
+/* DAY CARD */
+.day-card { background: var(–card-bg); border: 1px solid var(–border); border-radius: 16px; overflow: hidden; }
+.day-header { display: flex; align-items: center; justify-content: space-between; padding: 14px 20px; border-bottom: 1px solid var(–border); gap: 12px; flex-wrap: wrap; }
+.day-name { font-family: ‘Playfair Display’, serif; font-size: 19px; font-weight: 700; }
+.day-vibe { font-size: 10px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; padding: 4px 12px; border-radius: 100px; white-space: nowrap; }
+.vibe-strength { background: #FDEAE4; color: var(–coral); }
+.vibe-pilates { background: #DFF0EE; color: var(–teal); }
+.vibe-rest { background: #EDE8E3; color: var(–muted); }
+.vibe-church { background: #EDE8F5; color: var(–purple); }
+
+.blocks { display: flex; flex-direction: column; }
+.block { display: flex; border-bottom: 1px solid var(–border); min-height: 50px; }
+.block:last-child { border-bottom: none; }
+.block-pip { width: 4px; flex-shrink: 0; }
+.pip-work { background: var(–peach); }
+.pip-workout { background: var(–coral); }
+.pip-pilates { background: var(–teal); }
+.pip-food { background: var(–gold); }
+.pip-free { background: var(–lavender); }
+.pip-church { background: var(–purple); }
+.pip-sleep { background: #C2C8D8; }
+.pip-self { background: var(–blush); }
+.pip-read { background: #A8C89C; }
+.pip-game { background: #B8D4E8; }
+
+.block-time { width: 86px; flex-shrink: 0; padding: 13px 12px 13px 14px; font-size: 11px; font-weight: 600; color: var(–muted); letter-spacing: 0.03em; border-right: 1px solid var(–border); display: flex; align-items: flex-start; padding-top: 15px; line-height: 1.3; }
+.block-content { flex: 1; padding: 12px 16px; display: flex; flex-direction: column; gap: 2px; }
+.block-title { font-size: 13.5px; font-weight: 500; line-height: 1.3; }
+.block-note { font-size: 11.5px; color: var(–muted); font-weight: 300; line-height: 1.4; }
+
+.workout-block { cursor: pointer; }
+.workout-block .block-content { flex-direction: column; }
+.workout-top { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.expand-icon { font-size: 11px; color: var(–muted); flex-shrink: 0; transition: transform 0.2s; font-weight: 500; }
+.workout-block.open .expand-icon { transform: rotate(180deg); }
+.exercise-list { display: none; margin-top: 10px; padding-top: 10px; border-top: 1px dashed var(–border); flex-direction: column; gap: 7px; }
+.workout-block.open .exercise-list { display: flex; }
+.exercise-item { display: flex; gap: 10px; align-items: flex-start; }
+.ex-dot { width: 6px; height: 6px; border-radius: 50%; background: var(–peach); flex-shrink: 0; margin-top: 5px; }
+.ex-text { font-size: 12px; line-height: 1.4; }
+.ex-text strong { font-weight: 600; display: block; font-size: 12px; color: var(–dark); }
+.ex-text span { color: var(–muted); font-weight: 300; font-size: 11px; }
+.expand-hint { font-size: 11px; color: var(–teal); font-weight: 500; margin-top: 2px; }
+
+/* ── MEALS VIEW ── */
+.meals-view { padding: 20px 16px; display: flex; flex-direction: column; gap: 14px; }
+
+.meal-card { background: var(–card-bg); border: 1px solid var(–border); border-radius: 16px; overflow: hidden; }
+
+.meal-day-header { display: flex; align-items: center; justify-content: space-between; padding: 14px 20px; border-bottom: 1px solid var(–border); gap: 12px; flex-wrap: wrap; }
+.meal-day-name { font-family: ‘Playfair Display’, serif; font-size: 19px; font-weight: 700; }
+.meal-tag { font-size: 10px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; padding: 4px 12px; border-radius: 100px; }
+.tag-lift { background: #FDEAE4; color: var(–coral); }
+.tag-pilates { background: #DFF0EE; color: var(–teal); }
+.tag-rest { background: #EDE8E3; color: var(–muted); }
+
+.meal-slots { display: flex; flex-direction: column; }
+.meal-slot { display: flex; border-bottom: 1px solid var(–border); min-height: 54px; }
+.meal-slot:last-child { border-bottom: none; }
+
+.meal-pip { width: 4px; flex-shrink: 0; }
+.pip-breakfast { background: #F4D06A; }
+.pip-lunch { background: #7BBF6A; }
+.pip-snack { background: var(–peach); }
+.pip-dinner { background: var(–coral); }
+
+.meal-label-col { width: 80px; flex-shrink: 0; padding: 14px 10px 14px 14px; border-right: 1px solid var(–border); display: flex; flex-direction: column; justify-content: flex-start; gap: 2px; }
+.meal-label { font-size: 10px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(–muted); line-height: 1; }
+.meal-time-note { font-size: 10px; color: #C4B3AA; font-weight: 300; margin-top: 2px; }
+
+.meal-content { flex: 1; padding: 12px 16px; }
+.meal-name { font-size: 13.5px; font-weight: 500; line-height: 1.3; margin-bottom: 3px; }
+.meal-detail { font-size: 11.5px; color: var(–muted); font-weight: 300; line-height: 1.5; }
+.meal-macro { display: inline-block; font-size: 10px; font-weight: 600; letter-spacing: 0.06em; color: var(–green); background: #EEF7EC; padding: 2px 8px; border-radius: 100px; margin-top: 4px; }
+
+/* TIPS SECTION */
+.tips-strip { margin: 0 16px 20px; background: #F3FAF3; border: 1px solid #C8E6C3; border-radius: 14px; padding: 18px 20px; }
+.tips-strip h3 { font-family: ‘Playfair Display’, serif; font-size: 15px; color: var(–dark); margin-bottom: 12px; }
+.tips-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.tip-item { font-size: 12px; color: #4A6B45; line-height: 1.5; display: flex; gap: 8px; }
+.tip-item::before { content: ‘✓’; font-weight: 700; color: var(–green); flex-shrink: 0; }
+
+/* LEGEND + NOTE */
+.legend { padding: 18px 28px; border-top: 1px solid var(–border); display: flex; flex-wrap: wrap; gap: 14px; }
+.leg-item { display: flex; align-items: center; gap: 7px; font-size: 11.5px; color: var(–muted); }
+.leg-dot { width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0; }
+.note-bar { background: #FDF2EC; border-top: 1px solid var(–border); padding: 14px 28px; font-size: 12px; color: var(–muted); line-height: 1.6; }
+.note-bar strong { color: var(–dark); font-weight: 500; }
+</style>
+
+</head>
+<body>
+
+<div class="header">
+  <div class="eyebrow">Full Weekly Plan · Pilates + Strength + Nutrition</div>
+  <h1>Lola's <em>Complete</em> Weekly Plan</h1>
+  <p>Daily schedule, workout details, and clean meal ideas all in one place.</p>
+</div>
+
+<div class="tab-nav">
+  <span class="label">View:</span>
+  <button class="tab-btn active" onclick="switchTab('am', this)">☀️ AM Schedule</button>
+  <button class="tab-btn" onclick="switchTab('pm', this)">🌙 PM Schedule</button>
+  <span class="divider-dot">·</span>
+  <button class="tab-btn" onclick="switchTab('meals', this)">🥗 Meals</button>
+</div>
+
+<!-- ══════════════════ AM SCHEDULE ══════════════════ -->
+
+<div class="view visible" id="view-am">
+<div class="schedule visible">
+
+  <div class="day-card">
+    <div class="day-header"><div class="day-name">Monday</div><div class="day-vibe vibe-strength">Lower Body Strength</div></div>
+    <div class="blocks">
+      <div class="block"><div class="block-pip pip-sleep"></div><div class="block-time">5:30 AM</div><div class="block-content"><div class="block-title">Wake up</div><div class="block-note">Dress, optional pre-workout snack</div></div></div>
+      <div class="block workout-block" onclick="toggleWorkout(this)">
+        <div class="block-pip pip-workout"></div><div class="block-time">5:45 AM</div>
+        <div class="block-content">
+          <div class="workout-top"><div><div class="block-title">💪 Lower Body Strength <span style="color:var(--coral);font-size:11px;font-weight:400;">~50 min</span></div><div class="expand-hint">Tap to see exercises ↓</div></div><div class="expand-icon">▼</div></div>
+          <div class="exercise-list">
+            <div class="exercise-item"><div class="ex-dot"></div><div class="ex-text"><strong>Hip Thrusts</strong><span>4 sets × 10–12 reps — primary glute builder, go heavy</span></div></div>
+            <div class="exercise-item"><div class="ex-dot"></div><div class="ex-text"><strong>Romanian Deadlifts</strong><span>3 sets × 10 reps — glutes + hamstrings</span></div></div>
+            <div class="exercise-item"><div class="ex-dot"></div><div class="ex-text"><strong>Sumo Squats</strong><span>3 sets × 12 reps — inner glute emphasis</span></div></div>
+            <div class="exercise-item"><div class="ex-dot"></div><div class="ex-text"><strong>Cable Kickbacks</strong><span>3 sets × 15 each side</span></div></div>
+            <div class="exercise-item"><div class="ex-dot"></div><div class="ex-text"><strong>Leg Press (wide stance)</strong><span>3 sets × 12 reps</span></div></div>
+          </div>
+        </div>
+      </div>
+      <div class="block"><div class="block-pip pip-self"></div><div class="block-time">6:45 AM</div><div class="block-content"><div class="block-title">Shower + get ready</div><div class="block-note">Leave by 7:10</div></div></div>
+      <div class="block"><div class="block-pip pip-work"></div><div class="block-time">7:30 AM</div><div class="block-content"><div class="block-title">Work</div><div class="block-note">Until 4:00 PM</div></div></div>
+      <div class="block"><div class="block-pip pip-food"></div><div class="block-time">4:15 PM</div><div class="block-content"><div class="block-title">Dinner</div><div class="block-note">Protein-focused — hit your goals after the lift</div></div></div>
+      <div class="block"><div class="block-pip pip-free"></div><div class="block-time">5:30 PM</div><div class="block-content"><div class="block-title">Free time 🎮📖</div></div></div>
+      <div class="block"><div class="block-pip pip-sleep"></div><div class="block-time">9:30 PM</div><div class="block-content"><div class="block-title">Wind down + bed</div></div></div>
+    </div>
+  </div>
+
+  <div class="day-card">
+    <div class="day-header"><div class="day-name">Tuesday</div><div class="day-vibe vibe-pilates">Pilates — Core & Glutes</div></div>
+    <div class="blocks">
+      <div class="block"><div class="block-pip pip-sleep"></div><div class="block-time">6:00 AM</div><div class="block-content"><div class="block-title">Wake up</div><div class="block-note">Lighter morning — Pilates is gentler</div></div></div>
+      <div class="block workout-block" onclick="toggleWorkout(this)">
+        <div class="block-pip pip-pilates"></div><div class="block-time">6:15 AM</div>
+        <div class="block-content">
+          <div class="workout-top"><div><div class="block-title">🧘 Pilates — Core & Glutes <span style="color:var(--teal);font-size:11px;font-weight:400;">~35 min</span></div><div class="expand-hint">Tap to see exercises ↓</div></div><div class="expand-icon">▼</div></div>
+          <div class="exercise-list">
+            <div class="exercise-item"><div class="ex-dot" style="background:var(--teal)"></div><div class="ex-text"><strong>Bridges + Single-Leg Bridges</strong><span>3 × 15 each</span></div></div>
+            <div class="exercise-item"><div class="ex-dot" style="background:var(--teal)"></div><div class="ex-text"><strong>Clamshells</strong><span>3 × 20 each side — glute med</span></div></div>
+            <div class="exercise-item"><div class="ex-dot" style="background:var(--teal)"></div><div class="ex-text"><strong>Donkey Kicks</strong><span>3 × 15 each side</span></div></div>
+            <div class="exercise-item"><div class="ex-dot" style="background:var(--teal)"></div><div class="ex-text"><strong>Side-Lying Leg Series</strong><span>Lifts, circles, pulses — 2 rounds each side</span></div></div>
+            <div class="exercise-item"><div class="ex-dot" style="background:var(--teal)"></div><div class="ex-text"><strong>Dead Bug + Plank Holds</strong><span>Core stability, 3 rounds</span></div></div>
+          </div>
+        </div>
+      </div>
+      <div class="block"><div class="block-pip pip-self"></div><div class="block-time">6:55 AM</div><div class="block-content"><div class="block-title">Shower + get ready</div><div class="block-note">Leave by 7:10</div></div></div>
+      <div class="block"><div class="block-pip pip-work"></div><div class="block-time">7:30 AM</div><div class="block-content"><div class="block-title">Work</div><div class="block-note">Until 4:00 PM</div></div></div>
+      <div class="block"><div class="block-pip pip-food"></div><div class="block-time">4:15 PM</div><div class="block-content"><div class="block-title">Dinner</div></div></div>
+      <div class="block"><div class="block-pip pip-read"></div><div class="block-time">5:00 PM</div><div class="block-content"><div class="block-title">📖 Reading time</div></div></div>
+      <div class="block"><div class="block-pip pip-free"></div><div class="block-time">6:30 PM</div><div class="block-content"><div class="block-title">Free time / BookTok</div></div></div>
+      <div class="block"><div class="block-pip pip-sleep"></div><div class="block-time">9:30 PM</div><div class="block-content"><div class="block-title">Wind down + bed</div></div></div>
+    </div>
+  </div>
+
+  <div class="day-card">
+    <div class="day-header"><div class="day-name">Wednesday</div><div class="day-vibe vibe-strength">Upper Body Strength</div></div>
+    <div class="blocks">
+      <div class="block"><div class="block-pip pip-sleep"></div><div class="block-time">5:30 AM</div><div class="block-content"><div class="block-title">Wake up</div></div></div>
+      <div class="block workout-block" onclick="toggleWorkout(this)">
+        <div class="block-pip pip-workout"></div><div class="block-time">5:45 AM</div>
+        <div class="block-content">
+          <div class="workout-top"><div><div class="block-title">💪 Upper Body Strength <span style="color:var(--coral);font-size:11px;font-weight:400;">~45 min</span></div><div class="expand-hint">Tap to see exercises ↓</div></div><div class="expand-icon">▼</div></div>
+          <div class="exercise-list">
+            <div class="exercise-item"><div class="ex-dot"></div><div class="ex-text"><strong>Pull-Ups or Lat Pulldowns</strong><span>3 sets × 10 reps</span></div></div>
+            <div class="exercise-item"><div class="ex-dot"></div><div class="ex-text"><strong>Dumbbell Chest Press</strong><span>3 sets × 12 reps</span></div></div>
+            <div class="exercise-item"><div class="ex-dot"></div><div class="ex-text"><strong>Cable or Dumbbell Rows</strong><span>3 sets × 12 reps</span></div></div>
+            <div class="exercise-item"><div class="ex-dot"></div><div class="ex-text"><strong>Shoulder Press</strong><span>3 sets × 12 reps</span></div></div>
+            <div class="exercise-item"><div class="ex-dot"></div><div class="ex-text"><strong>Bicep Curls + Tricep Pushdowns</strong><span>2 sets × 15 each</span></div></div>
+          </div>
+        </div>
+      </div>
+      <div class="block"><div class="block-pip pip-self"></div><div class="block-time">6:40 AM</div><div class="block-content"><div class="block-title">Shower + get ready</div><div class="block-note">Leave by 7:10</div></div></div>
+      <div class="block"><div class="block-pip pip-work"></div><div class="block-time">7:30 AM</div><div class="block-content"><div class="block-title">Work</div><div class="block-note">Until 4:00 PM</div></div></div>
+      <div class="block"><div class="block-pip pip-food"></div><div class="block-time">4:15 PM</div><div class="block-content"><div class="block-title">Dinner</div></div></div>
+      <div class="block"><div class="block-pip pip-game"></div><div class="block-time">5:00 PM</div><div class="block-content"><div class="block-title">🎮 Fortnite / me time</div></div></div>
+      <div class="block"><div class="block-pip pip-sleep"></div><div class="block-time">9:30 PM</div><div class="block-content"><div class="block-title">Wind down + bed</div></div></div>
+    </div>
+  </div>
+
+  <div class="day-card">
+    <div class="day-header"><div class="day-name">Thursday</div><div class="day-vibe vibe-church">Combo + Church Night</div></div>
+    <div class="blocks">
+      <div class="block"><div class="block-pip pip-sleep"></div><div class="block-time">6:00 AM</div><div class="block-content"><div class="block-title">Wake up</div><div class="block-note">Light morning — church tonight</div></div></div>
+      <div class="block workout-block" onclick="toggleWorkout(this)">
+        <div class="block-pip pip-pilates"></div><div class="block-time">6:15 AM</div>
+        <div class="block-content">
+          <div class="workout-top"><div><div class="block-title">🧘 Pilates + Light Glutes <span style="color:var(--teal);font-size:11px;font-weight:400;">~35 min</span></div><div class="expand-hint">Tap to see exercises ↓</div></div><div class="expand-icon">▼</div></div>
+          <div class="exercise-list">
+            <div class="exercise-item"><div class="ex-dot" style="background:var(--teal)"></div><div class="ex-text"><strong>Pilates Warm-Up</strong><span>Roll-downs, spine articulation — 10 min</span></div></div>
+            <div class="exercise-item"><div class="ex-dot" style="background:var(--teal)"></div><div class="ex-text"><strong>Bulgarian Split Squats</strong><span>3 × 10 each — bodyweight or light DB only</span></div></div>
+            <div class="exercise-item"><div class="ex-dot" style="background:var(--teal)"></div><div class="ex-text"><strong>Fire Hydrants</strong><span>3 × 20 each side</span></div></div>
+            <div class="exercise-item"><div class="ex-dot" style="background:var(--teal)"></div><div class="ex-text"><strong>Pilates Side-Lying Series</strong><span>Glute med focus — 15 min</span></div></div>
+            <div class="exercise-item"><div class="ex-dot" style="background:var(--teal)"></div><div class="ex-text"><strong>Glute + Hip Flexor Stretch</strong><span>Cool-down — 5 min</span></div></div>
+          </div>
+        </div>
+      </div>
+      <div class="block"><div class="block-pip pip-self"></div><div class="block-time">6:55 AM</div><div class="block-content"><div class="block-title">Shower + get ready</div><div class="block-note">Leave by 7:10</div></div></div>
+      <div class="block"><div class="block-pip pip-work"></div><div class="block-time">7:30 AM</div><div class="block-content"><div class="block-title">Work</div><div class="block-note">Until 4:00 PM</div></div></div>
+      <div class="block"><div class="block-pip pip-food"></div><div class="block-time">4:15 PM</div><div class="block-content"><div class="block-title">Dinner before church</div><div class="block-note">Eat a proper meal — long evening ahead</div></div></div>
+      <div class="block"><div class="block-pip pip-self"></div><div class="block-time">5:30 PM</div><div class="block-content"><div class="block-title">Decompress / get ready</div></div></div>
+      <div class="block"><div class="block-pip pip-church"></div><div class="block-time">6:30 PM</div><div class="block-content"><div class="block-title">⛪ Church</div><div class="block-note">Until 9:00 PM</div></div></div>
+      <div class="block"><div class="block-pip pip-sleep"></div><div class="block-time">9:30 PM</div><div class="block-content"><div class="block-title">Home, wind down, bed</div></div></div>
+    </div>
+  </div>
+
+  <div class="day-card">
+    <div class="day-header"><div class="day-name">Friday</div><div class="day-vibe vibe-strength">Lower Body Strength</div></div>
+    <div class="blocks">
+      <div class="block"><div class="block-pip pip-sleep"></div><div class="block-time">5:30 AM</div><div class="block-content"><div class="block-title">Wake up</div></div></div>
+      <div class="block workout-block" onclick="toggleWorkout(this)">
+        <div class="block-pip pip-workout"></div><div class="block-time">5:45 AM</div>
+        <div class="block-content">
+          <div class="workout-top"><div><div class="block-title">💪 Lower Body Strength <span style="color:var(--coral);font-size:11px;font-weight:400;">~50 min</span></div><div class="expand-hint">Tap to see exercises ↓</div></div><div class="expand-icon">▼</div></div>
+          <div class="exercise-list">
+            <div class="exercise-item"><div class="ex-dot"></div><div class="ex-text"><strong>Barbell or Goblet Squats</strong><span>4 × 8–10 reps</span></div></div>
+            <div class="exercise-item"><div class="ex-dot"></div><div class="ex-text"><strong>Walking Lunges</strong><span>3 × 12 each leg</span></div></div>
+            <div class="exercise-item"><div class="ex-dot"></div><div class="ex-text"><strong>Glute Bridges with Band</strong><span>3 × 20 reps</span></div></div>
+            <div class="exercise-item"><div class="ex-dot"></div><div class="ex-text"><strong>Hamstring Curls (machine)</strong><span>3 × 12 reps</span></div></div>
+            <div class="exercise-item"><div class="ex-dot"></div><div class="ex-text"><strong>Standing Abductors</strong><span>3 × 15 each — cable or machine</span></div></div>
+          </div>
+        </div>
+      </div>
+      <div class="block"><div class="block-pip pip-self"></div><div class="block-time">6:45 AM</div><div class="block-content"><div class="block-title">Shower + get ready</div><div class="block-note">Leave by 7:10</div></div></div>
+      <div class="block"><div class="block-pip pip-work"></div><div class="block-time">7:30 AM</div><div class="block-content"><div class="block-title">Work</div><div class="block-note">Until 4:00 PM — it's Friday! 🎉</div></div></div>
+      <div class="block"><div class="block-pip pip-food"></div><div class="block-time">4:15 PM</div><div class="block-content"><div class="block-title">Dinner / treat yourself</div></div></div>
+      <div class="block"><div class="block-pip pip-free"></div><div class="block-time">5:30 PM</div><div class="block-content"><div class="block-title">Weekend starts 🎮📖✨</div></div></div>
+    </div>
+  </div>
+
+  <div class="day-card">
+    <div class="day-header"><div class="day-name">Saturday</div><div class="day-vibe vibe-pilates">Pilates Full Flow</div></div>
+    <div class="blocks">
+      <div class="block"><div class="block-pip pip-sleep"></div><div class="block-time">7:30 AM</div><div class="block-content"><div class="block-title">Sleep in ☁️</div></div></div>
+      <div class="block workout-block" onclick="toggleWorkout(this)">
+        <div class="block-pip pip-pilates"></div><div class="block-time">8:30 AM</div>
+        <div class="block-content">
+          <div class="workout-top"><div><div class="block-title">🧘 Pilates Full Flow <span style="color:var(--teal);font-size:11px;font-weight:400;">~45 min</span></div><div class="expand-hint">Tap to see exercises ↓</div></div><div class="expand-icon">▼</div></div>
+          <div class="exercise-list">
+            <div class="exercise-item"><div class="ex-dot" style="background:var(--teal)"></div><div class="ex-text"><strong>The Hundred + Roll-Up Series</strong><span>Core + breath control</span></div></div>
+            <div class="exercise-item"><div class="ex-dot" style="background:var(--teal)"></div><div class="ex-text"><strong>Swimming + Leg Pull Front</strong><span>Back body activation</span></div></div>
+            <div class="exercise-item"><div class="ex-dot" style="background:var(--teal)"></div><div class="ex-text"><strong>Side Kick Series</strong><span>Hip stability + glute med</span></div></div>
+            <div class="exercise-item"><div class="ex-dot" style="background:var(--teal)"></div><div class="ex-text"><strong>Spine Twist + Saw</strong><span>Mobility and rotation</span></div></div>
+            <div class="exercise-item"><div class="ex-dot" style="background:var(--teal)"></div><div class="ex-text"><strong>Child's Pose + Pigeon Stretch</strong><span>Deep glute release cool-down</span></div></div>
+          </div>
+        </div>
+      </div>
+      <div class="block"><div class="block-pip pip-food"></div><div class="block-time">9:30 AM</div><div class="block-content"><div class="block-title">Breakfast + coffee</div></div></div>
+      <div class="block"><div class="block-pip pip-self"></div><div class="block-time">10:30 AM</div><div class="block-content"><div class="block-title">Self care / errands</div></div></div>
+      <div class="block"><div class="block-pip pip-read"></div><div class="block-time">1:00 PM</div><div class="block-content"><div class="block-title">📖 Reading / BookTok content</div></div></div>
+      <div class="block"><div class="block-pip pip-game"></div><div class="block-time">4:00 PM</div><div class="block-content"><div class="block-title">🎮 Fortnite / free time</div></div></div>
+      <div class="block"><div class="block-pip pip-free"></div><div class="block-time">7:00 PM</div><div class="block-content"><div class="block-title">Evening — totally yours</div></div></div>
+    </div>
+  </div>
+
+  <div class="day-card">
+    <div class="day-header"><div class="day-name">Sunday</div><div class="day-vibe vibe-rest">Rest & Recharge</div></div>
+    <div class="blocks">
+      <div class="block"><div class="block-pip pip-sleep"></div><div class="block-time">8:00 AM</div><div class="block-content"><div class="block-title">Sleep in / slow morning ☀️</div></div></div>
+      <div class="block"><div class="block-pip pip-food"></div><div class="block-time">10:00 AM</div><div class="block-content"><div class="block-title">Brunch + meal prep</div><div class="block-note">Set up your week — lunches, snacks, protein</div></div></div>
+      <div class="block"><div class="block-pip pip-read"></div><div class="block-time">12:00 PM</div><div class="block-content"><div class="block-title">📖 Reading or rest</div></div></div>
+      <div class="block"><div class="block-pip pip-free"></div><div class="block-time">2:00 PM</div><div class="block-content"><div class="block-title">Free afternoon</div><div class="block-note">Boyfriend time, errands, content, or just nothing</div></div></div>
+      <div class="block"><div class="block-pip pip-self"></div><div class="block-time">7:00 PM</div><div class="block-content"><div class="block-title">Sunday reset</div><div class="block-note">Lay out outfit, plan your week, skincare</div></div></div>
+      <div class="block"><div class="block-pip pip-sleep"></div><div class="block-time">9:30 PM</div><div class="block-content"><div class="block-title">Early bed — big week ahead 💤</div></div></div>
+    </div>
+  </div>
+
+</div>
+</div>
+
+<!-- ══════════════════ PM SCHEDULE ══════════════════ -->
+
+<div class="view" id="view-pm">
+<div class="schedule visible">
+
+  <div class="day-card">
+    <div class="day-header"><div class="day-name">Monday</div><div class="day-vibe vibe-strength">Lower Body Strength</div></div>
+    <div class="blocks">
+      <div class="block"><div class="block-pip pip-sleep"></div><div class="block-time">6:30 AM</div><div class="block-content"><div class="block-title">Wake up + get ready</div><div class="block-note">Leave by 7:10</div></div></div>
+      <div class="block"><div class="block-pip pip-work"></div><div class="block-time">7:30 AM</div><div class="block-content"><div class="block-title">Work</div><div class="block-note">Until 4:00 PM</div></div></div>
+      <div class="block"><div class="block-pip pip-food"></div><div class="block-time">4:15 PM</div><div class="block-content"><div class="block-title">Post-work snack</div><div class="block-note">Something light before your workout</div></div></div>
+      <div class="block workout-block" onclick="toggleWorkout(this)">
+        <div class="block-pip pip-workout"></div><div class="block-time">5:00 PM</div>
+        <div class="block-content">
+          <div class="workout-top"><div><div class="block-title">💪 Lower Body Strength <span style="color:var(--coral);font-size:11px;font-weight:400;">~50 min</span></div><div class="expand-hint">Tap to see exercises ↓</div></div><div class="expand-icon">▼</div></div>
+          <div class="exercise-list">
+            <div class="exercise-item"><div class="ex-dot"></div><div class="ex-text"><strong>Hip Thrusts</strong><span>4 sets × 10–12 reps — go heavy</span></div></div>
+            <div class="exercise-item"><div class="ex-dot"></div><div class="ex-text"><strong>Romanian Deadlifts</strong><span>3 sets × 10 reps</span></div></div>
+            <div class="exercise-item"><div class="ex-dot"></div><div class="ex-text"><strong>Sumo Squats</strong><span>3 sets × 12 reps</span></div></div>
+            <div class="exercise-item"><div class="ex-dot"></div><div class="ex-text"><strong>Cable Kickbacks</strong><span>3 sets × 15 each side</span></div></div>
+            <div class="exercise-item"><div class="ex-dot"></div><div class="ex-text"><strong>Leg Press (wide stance)</strong><span>3 sets × 12 reps</span></div></div>
+          </div>
+        </div>
+      </div>
+      <div class="block"><div class="block-pip pip-food"></div><div class="block-time">6:00 PM</div><div class="block-content"><div class="block-title">Dinner</div></div></div>
+      <div class="block"><div class="block-pip pip-free"></div><div class="block-time">7:00 PM</div><div class="block-content"><div class="block-title">🎮 Fortnite / free time</div></div></div>
+      <div class="block"><div class="block-pip pip-sleep"></div><div class="block-time">10:00 PM</div><div class="block-content"><div class="block-title">Wind down + bed</div></div></div>
+    </div>
+  </div>
+
+  <div class="day-card">
+    <div class="day-header"><div class="day-name">Tuesday</div><div class="day-vibe vibe-pilates">Pilates — Core & Glutes</div></div>
+    <div class="blocks">
+      <div class="block"><div class="block-pip pip-sleep"></div><div class="block-time">6:30 AM</div><div class="block-content"><div class="block-title">Wake up + get ready</div></div></div>
+      <div class="block"><div class="block-pip pip-work"></div><div class="block-time">7:30 AM</div><div class="block-content"><div class="block-title">Work</div><div class="block-note">Until 4:00 PM</div></div></div>
+      <div class="block workout-block" onclick="toggleWorkout(this)">
+        <div class="block-pip pip-pilates"></div><div class="block-time">4:30 PM</div>
+        <div class="block-content">
+          <div class="workout-top"><div><div class="block-title">🧘 Pilates — Core & Glutes <span style="color:var(--teal);font-size:11px;font-weight:400;">~35 min</span></div><div class="expand-hint">Tap to see exercises ↓</div></div><div class="expand-icon">▼</div></div>
+          <div class="exercise-list">
+            <div class="exercise-item"><div class="ex-dot" style="background:var(--teal)"></div><div class="ex-text"><strong>Bridges + Single-Leg Bridges</strong><span>3 × 15 each</span></div></div>
+            <div class="exercise-item"><div class="ex-dot" style="background:var(--teal)"></div><div class="ex-text"><strong>Clamshells</strong><span>3 × 20 each side</span></div></div>
+            <div class="exercise-item"><div class="ex-dot" style="background:var(--teal)"></div><div class="ex-text"><strong>Donkey Kicks</strong><span>3 × 15 each side</span></div></div>
+            <div class="exercise-item"><div class="ex-dot" style="background:var(--teal)"></div><div class="ex-text"><strong>Side-Lying Leg Series</strong><span>2 rounds each side</span></div></div>
+            <div class="exercise-item"><div class="ex-dot" style="background:var(--teal)"></div><div class="ex-text"><strong>Dead Bug + Plank Holds</strong><span>3 rounds</span></div></div>
+          </div>
+        </div>
+      </div>
+      <div class="block"><div class="block-pip pip-food"></div><div class="block-time">5:15 PM</div><div class="block-content"><div class="block-title">Dinner</div></div></div>
+      <div class="block"><div class="block-pip pip-read"></div><div class="block-time">6:00 PM</div><div class="block-content"><div class="block-title">📖 Reading time</div></div></div>
+      <div class="block"><div class="block-pip pip-free"></div><div class="block-time">7:30 PM</div><div class="block-content"><div class="block-title">Free time / BookTok</div></div></div>
+      <div class="block"><div class="block-pip pip-sleep"></div><div class="block-time">10:00 PM</div><div class="block-content"><div class="block-title">Wind down + bed</div></div></div>
+    </div>
+  </div>
+
+  <div class="day-card">
+    <div class="day-header"><div class="day-name">Wednesday</div><div class="day-vibe vibe-strength">Upper Body Strength</div></div>
+    <div class="blocks">
+      <div class="block"><div class="block-pip pip-sleep"></div><div class="block-time">6:30 AM</div><div class="block-content"><div class="block-title">Wake up + get ready</div></div></div>
+      <div class="block"><div class="block-pip pip-work"></div><div class="block-time">7:30 AM</div><div class="block-content"><div class="block-title">Work</div><div class="block-note">Until 4:00 PM</div></div></div>
+      <div class="block"><div class="block-pip pip-food"></div><div class="block-time">4:15 PM</div><div class="block-content"><div class="block-title">Post-work snack</div></div></div>
+      <div class="block workout-block" onclick="toggleWorkout(this)">
+        <div class="block-pip pip-workout"></div><div class="block-time">5:00 PM</div>
+        <div class="block-content">
+          <div class="workout-top"><div><div class="block-title">💪 Upper Body Strength <span style="color:var(--coral);font-size:11px;font-weight:400;">~45 min</span></div><div class="expand-hint">Tap to see exercises ↓</div></div><div class="expand-icon">▼</div></div>
+          <div class="exercise-list">
+            <div class="exercise-item"><div class="ex-dot"></div><div class="ex-text"><strong>Pull-Ups or Lat Pulldowns</strong><span>3 sets × 10 reps</span></div></div>
+            <div class="exercise-item"><div class="ex-dot"></div><div class="ex-text"><strong>Dumbbell Chest Press</strong><span>3 sets × 12 reps</span></div></div>
+            <div class="exercise-item"><div class="ex-dot"></div><div class="ex-text"><strong>Cable or Dumbbell Rows</strong><span>3 sets × 12 reps</span></div></div>
+            <div class="exercise-item"><div class="ex-dot"></div><div class="ex-text"><strong>Shoulder Press</strong><span>3 sets × 12 reps</span></div></div>
+            <div class="exercise-item"><div class="ex-dot"></div><div class="ex-text"><strong>Bicep Curls + Tricep Pushdowns</strong><span>2 sets × 15 each</span></div></div>
+          </div>
+        </div>
+      </div>
+      <div class="block"><div class="block-pip pip-food"></div><div class="block-time">6:00 PM</div><div class="block-content"><div class="block-title">Dinner</div></div></div>
+      <div class="block"><div class="block-pip pip-game"></div><div class="block-time">7:00 PM</div><div class="block-content"><div class="block-title">🎮 Fortnite / me time</div></div></div>
+      <div class="block"><div class="block-pip pip-sleep"></div><div class="block-time">10:00 PM</div><div class="block-content"><div class="block-title">Wind down + bed</div></div></div>
+    </div>
+  </div>
+
+  <div class="day-card">
+    <div class="day-header"><div class="day-name">Thursday</div><div class="day-vibe vibe-church">Pilates (Quick) + Church</div></div>
+    <div class="blocks">
+      <div class="block"><div class="block-pip pip-sleep"></div><div class="block-time">6:30 AM</div><div class="block-content"><div class="block-title">Wake up + get ready</div></div></div>
+      <div class="block"><div class="block-pip pip-work"></div><div class="block-time">7:30 AM</div><div class="block-content"><div class="block-title">Work</div><div class="block-note">Until 4:00 PM</div></div></div>
+      <div class="block workout-block" onclick="toggleWorkout(this)">
+        <div class="block-pip pip-pilates"></div><div class="block-time">4:15 PM</div>
+        <div class="block-content">
+          <div class="workout-top"><div><div class="block-title">🧘 Quick Pilates <span style="color:var(--teal);font-size:11px;font-weight:400;">optional · 20 min</span></div><div class="expand-hint">Tap to see exercises ↓</div></div><div class="expand-icon">▼</div></div>
+          <div class="exercise-list">
+            <div class="exercise-item"><div class="ex-dot" style="background:var(--teal)"></div><div class="ex-text"><strong>Bridges</strong><span>2 × 15 — light movement only</span></div></div>
+            <div class="exercise-item"><div class="ex-dot" style="background:var(--teal)"></div><div class="ex-text"><strong>Clamshells</strong><span>2 × 15 each side</span></div></div>
+            <div class="exercise-item"><div class="ex-dot" style="background:var(--teal)"></div><div class="ex-text"><strong>Spine + Hip Flexor Stretch</strong><span>Church is the priority tonight — keep it easy</span></div></div>
+          </div>
+        </div>
+      </div>
+      <div class="block"><div class="block-pip pip-food"></div><div class="block-time">5:00 PM</div><div class="block-content"><div class="block-title">Dinner before church</div></div></div>
+      <div class="block"><div class="block-pip pip-self"></div><div class="block-time">5:45 PM</div><div class="block-content"><div class="block-title">Get ready / decompress</div></div></div>
+      <div class="block"><div class="block-pip pip-church"></div><div class="block-time">6:30 PM</div><div class="block-content"><div class="block-title">⛪ Church</div><div class="block-note">Until 9:00 PM</div></div></div>
+      <div class="block"><div class="block-pip pip-sleep"></div><div class="block-time">10:00 PM</div><div class="block-content"><div class="block-title">Home, wind down, bed</div></div></div>
+    </div>
+  </div>
+
+  <div class="day-card">
+    <div class="day-header"><div class="day-name">Friday</div><div class="day-vibe vibe-strength">Lower Body Strength</div></div>
+    <div class="blocks">
+      <div class="block"><div class="block-pip pip-sleep"></div><div class="block-time">6:30 AM</div><div class="block-content"><div class="block-title">Wake up + get ready</div></div></div>
+      <div class="block"><div class="block-pip pip-work"></div><div class="block-time">7:30 AM</div><div class="block-content"><div class="block-title">Work</div><div class="block-note">Until 4:00 PM — it's Friday! 🎉</div></div></div>
+      <div class="block"><div class="block-pip pip-food"></div><div class="block-time">4:15 PM</div><div class="block-content"><div class="block-title">Post-work snack</div></div></div>
+      <div class="block workout-block" onclick="toggleWorkout(this)">
+        <div class="block-pip pip-workout"></div><div class="block-time">5:00 PM</div>
+        <div class="block-content">
+          <div class="workout-top"><div><div class="block-title">💪 Lower Body Strength <span style="color:var(--coral);font-size:11px;font-weight:400;">~50 min</span></div><div class="expand-hint">Tap to see exercises ↓</div></div><div class="expand-icon">▼</div></div>
+          <div class="exercise-list">
+            <div class="exercise-item"><div class="ex-dot"></div><div class="ex-text"><strong>Barbell or Goblet Squats</strong><span>4 × 8–10 reps</span></div></div>
+            <div class="exercise-item"><div class="ex-dot"></div><div class="ex-text"><strong>Walking Lunges</strong><span>3 × 12 each leg</span></div></div>
+            <div class="exercise-item"><div class="ex-dot"></div><div class="ex-text"><strong>Glute Bridges with Band</strong><span>3 × 20 reps</span></div></div>
+            <div class="exercise-item"><div class="ex-dot"></div><div class="ex-text"><strong>Hamstring Curls (machine)</strong><span>3 × 12 reps</span></div></div>
+            <div class="exercise-item"><div class="ex-dot"></div><div class="ex-text"><strong>Standing Abductors</strong><span>3 × 15 each — cable or machine</span></div></div>
+          </div>
+        </div>
+      </div>
+      <div class="block"><div class="block-pip pip-food"></div><div class="block-time">6:00 PM</div><div class="block-content"><div class="block-title">Dinner / treat yourself</div></div></div>
+      <div class="block"><div class="block-pip pip-free"></div><div class="block-time">7:00 PM</div><div class="block-content"><div class="block-title">Weekend starts 🎮📖✨</div></div></div>
+    </div>
+  </div>
+
+  <div class="day-card">
+    <div class="day-header"><div class="day-name">Saturday</div><div class="day-vibe vibe-pilates">Pilates Full Flow</div></div>
+    <div class="blocks">
+      <div class="block"><div class="block-pip pip-sleep"></div><div class="block-time">8:00 AM</div><div class="block-content"><div class="block-title">Sleep in ☁️</div></div></div>
+      <div class="block"><div class="block-pip pip-food"></div><div class="block-time">9:30 AM</div><div class="block-content"><div class="block-title">Breakfast + slow morning</div></div></div>
+      <div class="block"><div class="block-pip pip-self"></div><div class="block-time">11:00 AM</div><div class="block-content"><div class="block-title">Self care / errands</div></div></div>
+      <div class="block"><div class="block-pip pip-read"></div><div class="block-time">1:00 PM</div><div class="block-content"><div class="block-title">📖 Reading / BookTok content</div></div></div>
+      <div class="block workout-block" onclick="toggleWorkout(this)">
+        <div class="block-pip pip-pilates"></div><div class="block-time">3:30 PM</div>
+        <div class="block-content">
+          <div class="workout-top"><div><div class="block-title">🧘 Pilates Full Flow <span style="color:var(--teal);font-size:11px;font-weight:400;">~45 min</span></div><div class="expand-hint">Tap to see exercises ↓</div></div><div class="expand-icon">▼</div></div>
+          <div class="exercise-list">
+            <div class="exercise-item"><div class="ex-dot" style="background:var(--teal)"></div><div class="ex-text"><strong>The Hundred + Roll-Up Series</strong><span>Core + breath control</span></div></div>
+            <div class="exercise-item"><div class="ex-dot" style="background:var(--teal)"></div><div class="ex-text"><strong>Swimming + Leg Pull Front</strong><span>Back body activation</span></div></div>
+            <div class="exercise-item"><div class="ex-dot" style="background:var(--teal)"></div><div class="ex-text"><strong>Side Kick Series</strong><span>Hip stability + glute med</span></div></div>
+            <div class="exercise-item"><div class="ex-dot" style="background:var(--teal)"></div><div class="ex-text"><strong>Spine Twist + Saw</strong><span>Mobility and rotation</span></div></div>
+            <div class="exercise-item"><div class="ex-dot" style="background:var(--teal)"></div><div class="ex-text"><strong>Child's Pose + Pigeon Stretch</strong><span>Deep glute release</span></div></div>
+          </div>
+        </div>
+      </div>
+      <div class="block"><div class="block-pip pip-game"></div><div class="block-time">4:30 PM</div><div class="block-content"><div class="block-title">🎮 Fortnite / free time</div></div></div>
+      <div class="block"><div class="block-pip pip-free"></div><div class="block-time">7:00 PM</div><div class="block-content"><div class="block-title">Evening — totally yours</div></div></div>
+    </div>
+  </div>
+
+  <div class="day-card">
+    <div class="day-header"><div class="day-name">Sunday</div><div class="day-vibe vibe-rest">Rest & Recharge</div></div>
+    <div class="blocks">
+      <div class="block"><div class="block-pip pip-sleep"></div><div class="block-time">8:00 AM</div><div class="block-content"><div class="block-title">Sleep in / slow morning ☀️</div></div></div>
+      <div class="block"><div class="block-pip pip-food"></div><div class="block-time">10:00 AM</div><div class="block-content"><div class="block-title">Brunch + meal prep</div></div></div>
+      <div class="block"><div class="block-pip pip-read"></div><div class="block-time">12:00 PM</div><div class="block-content"><div class="block-title">📖 Reading or rest</div></div></div>
+      <div class="block"><div class="block-pip pip-free"></div><div class="block-time">2:00 PM</div><div class="block-content"><div class="block-title">Free afternoon</div></div></div>
+      <div class="block"><div class="block-pip pip-self"></div><div class="block-time">7:00 PM</div><div class="block-content"><div class="block-title">Sunday reset</div></div></div>
+      <div class="block"><div class="block-pip pip-sleep"></div><div class="block-time">10:00 PM</div><div class="block-content"><div class="block-title">Wind down + bed 💤</div></div></div>
+    </div>
+  </div>
+
+</div>
+</div>
+
+<!-- ══════════════════ MEALS VIEW ══════════════════ -->
+
+<div class="view" id="view-meals">
+<div class="meals-view">
+
+  <div class="tips-strip">
+    <h3>🥗 Nutrition Goals</h3>
+    <div class="tips-grid">
+      <div class="tip-item">100–130g protein daily — non-negotiable for glute growth</div>
+      <div class="tip-item">Eat more on strength days, a little lighter on Pilates days</div>
+      <div class="tip-item">Prep lunches Sunday so weekdays are grab-and-go</div>
+      <div class="tip-item">Hit protein on rest days — that's when muscle is built</div>
+      <div class="tip-item">Hydrate well — aim for 2–3L water per day</div>
+      <div class="tip-item">Don't skip breakfast on workout mornings</div>
+    </div>
+  </div>
+
+  <!-- BREAKFAST IDEAS -->
+
+  <div class="meal-card">
+    <div class="meal-day-header">
+      <div class="meal-day-name">☀️ Breakfast Ideas</div>
+      <div class="meal-tag tag-lift">aim for 20–30g protein</div>
+    </div>
+    <div class="meal-slots">
+      <div class="meal-slot">
+        <div class="meal-pip pip-breakfast"></div>
+        <div class="meal-label-col"><div class="meal-label">Quick</div><div class="meal-time-note">5 min</div></div>
+        <div class="meal-content">
+          <div class="meal-name">Greek Yogurt Parfait</div>
+          <div class="meal-detail">Plain full-fat Greek yogurt, mixed berries, granola, drizzle of honey</div>
+          <div class="meal-macro">~25g protein</div>
+        </div>
+      </div>
+      <div class="meal-slot">
+        <div class="meal-pip pip-breakfast"></div>
+        <div class="meal-label-col"><div class="meal-label">Quick</div><div class="meal-time-note">5 min</div></div>
+        <div class="meal-content">
+          <div class="meal-name">Protein Shake + Banana</div>
+          <div class="meal-detail">Protein powder, almond milk, handful of spinach, frozen banana — blend and go</div>
+          <div class="meal-macro">~28g protein</div>
+        </div>
+      </div>
+      <div class="meal-slot">
+        <div class="meal-pip pip-breakfast"></div>
+        <div class="meal-label-col"><div class="meal-label">Quick</div><div class="meal-time-note">5 min</div></div>
+        <div class="meal-content">
+          <div class="meal-name">Cottage Cheese Bowl</div>
+          <div class="meal-detail">Cottage cheese, pineapple or peach chunks, chia seeds, a little honey</div>
+          <div class="meal-macro">~24g protein</div>
+        </div>
+      </div>
+      <div class="meal-slot">
+        <div class="meal-pip pip-breakfast"></div>
+        <div class="meal-label-col"><div class="meal-label">Medium</div><div class="meal-time-note">10 min</div></div>
+        <div class="meal-content">
+          <div class="meal-name">Eggs + Avocado Toast</div>
+          <div class="meal-detail">2 eggs any style, whole grain toast, smashed avocado, everything bagel seasoning</div>
+          <div class="meal-macro">~22g protein</div>
+        </div>
+      </div>
+      <div class="meal-slot">
+        <div class="meal-pip pip-breakfast"></div>
+        <div class="meal-label-col"><div class="meal-label">Medium</div><div class="meal-time-note">10 min</div></div>
+        <div class="meal-content">
+          <div class="meal-name">Protein Oats</div>
+          <div class="meal-detail">Oatmeal cooked in almond milk, stir in protein powder, top with banana + nut butter</div>
+          <div class="meal-macro">~30g protein</div>
+        </div>
+      </div>
+      <div class="meal-slot">
+        <div class="meal-pip pip-breakfast"></div>
+        <div class="meal-label-col"><div class="meal-label">Weekend</div><div class="meal-time-note">15 min</div></div>
+        <div class="meal-content">
+          <div class="meal-name">Veggie Egg Scramble</div>
+          <div class="meal-detail">3 eggs with spinach, mushrooms, bell pepper, served with whole grain toast or fruit</div>
+          <div class="meal-macro">~28g protein</div>
+        </div>
+      </div>
+      <div class="meal-slot">
+        <div class="meal-pip pip-breakfast"></div>
+        <div class="meal-label-col"><div class="meal-label">Weekend</div><div class="meal-time-note">15 min</div></div>
+        <div class="meal-content">
+          <div class="meal-name">Banana Protein Pancakes</div>
+          <div class="meal-detail">Mashed banana + 2 eggs + protein powder, cook like pancakes, top with berries</div>
+          <div class="meal-macro">~30g protein</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- LUNCH IDEAS — WORK -->
+
+  <div class="meal-card">
+    <div class="meal-day-header">
+      <div class="meal-day-name">🥡 Work Lunches</div>
+      <div class="meal-tag tag-pilates">pack-ahead · aim for 35–45g protein</div>
+    </div>
+    <div class="meal-slots">
+      <div class="meal-slot">
+        <div class="meal-pip pip-lunch"></div>
+        <div class="meal-label-col"><div class="meal-label">Bowl</div><div class="meal-time-note">prep Sunday</div></div>
+        <div class="meal-content">
+          <div class="meal-name">Chicken & Rice Bowl</div>
+          <div class="meal-detail">Grilled chicken breast, brown rice, roasted broccoli, olive oil + lemon — travels perfectly</div>
+          <div class="meal-macro">~45g protein</div>
+        </div>
+      </div>
+      <div class="meal-slot">
+        <div class="meal-pip pip-lunch"></div>
+        <div class="meal-label-col"><div class="meal-label">Bowl</div><div class="meal-time-note">prep Sunday</div></div>
+        <div class="meal-content">
+          <div class="meal-name">Ground Turkey Taco Bowl</div>
+          <div class="meal-detail">Seasoned ground turkey, black beans, brown rice, salsa, avocado — pack avocado separately</div>
+          <div class="meal-macro">~45g protein</div>
+        </div>
+      </div>
+      <div class="meal-slot">
+        <div class="meal-pip pip-lunch"></div>
+        <div class="meal-label-col"><div class="meal-label">Bowl</div><div class="meal-time-note">prep Sunday</div></div>
+        <div class="meal-content">
+          <div class="meal-name">Quinoa Power Bowl</div>
+          <div class="meal-detail">Quinoa, roasted chickpeas, cucumber, cherry tomatoes, feta, lemon-tahini dressing on the side</div>
+          <div class="meal-macro">~28g protein</div>
+        </div>
+      </div>
+      <div class="meal-slot">
+        <div class="meal-pip pip-lunch"></div>
+        <div class="meal-label-col"><div class="meal-label">Wrap</div><div class="meal-time-note">5 min morning</div></div>
+        <div class="meal-content">
+          <div class="meal-name">Turkey Hummus Wrap</div>
+          <div class="meal-detail">Whole wheat wrap, sliced turkey, hummus, romaine, tomato, cucumber — wrap tight, pack flat</div>
+          <div class="meal-macro">~35g protein</div>
+        </div>
+      </div>
+      <div class="meal-slot">
+        <div class="meal-pip pip-lunch"></div>
+        <div class="meal-label-col"><div class="meal-label">Wrap</div><div class="meal-time-note">5 min morning</div></div>
+        <div class="meal-content">
+          <div class="meal-name">Chicken Caesar Wrap</div>
+          <div class="meal-detail">Prepped grilled chicken, romaine, light Caesar, parmesan in a whole wheat wrap</div>
+          <div class="meal-macro">~40g protein</div>
+        </div>
+      </div>
+      <div class="meal-slot">
+        <div class="meal-pip pip-lunch"></div>
+        <div class="meal-label-col"><div class="meal-label">Salad</div><div class="meal-time-note">prep Sunday</div></div>
+        <div class="meal-content">
+          <div class="meal-name">Big Protein Salad</div>
+          <div class="meal-detail">Arugula or mixed greens, grilled chicken or canned salmon, hard-boiled egg, chickpeas — dressing on the side</div>
+          <div class="meal-macro">~40g protein</div>
+        </div>
+      </div>
+      <div class="meal-slot">
+        <div class="meal-pip pip-lunch"></div>
+        <div class="meal-label-col"><div class="meal-label">Salad</div><div class="meal-time-note">grab & go</div></div>
+        <div class="meal-content">
+          <div class="meal-name">Tuna Salad Lettuce Cups</div>
+          <div class="meal-detail">Tuna with Greek yogurt instead of mayo, diced celery + onion in romaine cups, side of rice cakes</div>
+          <div class="meal-macro">~38g protein</div>
+        </div>
+      </div>
+      <div class="meal-slot">
+        <div class="meal-pip pip-lunch"></div>
+        <div class="meal-label-col"><div class="meal-label">Easy</div><div class="meal-time-note">no prep</div></div>
+        <div class="meal-content">
+          <div class="meal-name">Protein Snack Box</div>
+          <div class="meal-detail">Hard-boiled eggs, string cheese, turkey slices, apple, almonds, crackers — zero cooking</div>
+          <div class="meal-macro">~30g protein</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- DINNER IDEAS -->
+
+  <div class="meal-card">
+    <div class="meal-day-header">
+      <div class="meal-day-name">🍽️ Dinner Ideas</div>
+      <div class="meal-tag tag-lift">aim for 35–50g protein</div>
+    </div>
+    <div class="meal-slots">
+      <div class="meal-slot">
+        <div class="meal-pip pip-dinner"></div>
+        <div class="meal-label-col"><div class="meal-label">Easy</div><div class="meal-time-note">20 min</div></div>
+        <div class="meal-content">
+          <div class="meal-name">Salmon + Sweet Potato</div>
+          <div class="meal-detail">Baked salmon fillet, roasted sweet potato, sautéed spinach with garlic</div>
+          <div class="meal-macro">~42g protein</div>
+        </div>
+      </div>
+      <div class="meal-slot">
+        <div class="meal-pip pip-dinner"></div>
+        <div class="meal-label-col"><div class="meal-label">Easy</div><div class="meal-time-note">20 min</div></div>
+        <div class="meal-content">
+          <div class="meal-name">Sheet Pan Chicken + Veggies</div>
+          <div class="meal-detail">Chicken thighs, zucchini, bell peppers, cherry tomatoes, olive oil + Italian seasoning — one pan</div>
+          <div class="meal-macro">~42g protein</div>
+        </div>
+      </div>
+      <div class="meal-slot">
+        <div class="meal-pip pip-dinner"></div>
+        <div class="meal-label-col"><div class="meal-label">Easy</div><div class="meal-time-note">20 min</div></div>
+        <div class="meal-content">
+          <div class="meal-name">Shrimp Stir-Fry</div>
+          <div class="meal-detail">Shrimp, bell peppers, snap peas, brown rice, coconut aminos or low-sodium soy sauce</div>
+          <div class="meal-macro">~35g protein</div>
+        </div>
+      </div>
+      <div class="meal-slot">
+        <div class="meal-pip pip-dinner"></div>
+        <div class="meal-label-col"><div class="meal-label">Easy</div><div class="meal-time-note">25 min</div></div>
+        <div class="meal-content">
+          <div class="meal-name">Turkey Bolognese</div>
+          <div class="meal-detail">Ground turkey with marinara, served over lentil or chickpea pasta for extra protein</div>
+          <div class="meal-macro">~45g protein</div>
+        </div>
+      </div>
+      <div class="meal-slot">
+        <div class="meal-pip pip-dinner"></div>
+        <div class="meal-label-col"><div class="meal-label">Cozy</div><div class="meal-time-note">30 min</div></div>
+        <div class="meal-content">
+          <div class="meal-name">Chicken Soup</div>
+          <div class="meal-detail">Rotisserie chicken, low-sodium broth, carrots, celery, noodles or rice — comforting and easy</div>
+          <div class="meal-macro">~38g protein</div>
+        </div>
+      </div>
+      <div class="meal-slot">
+        <div class="meal-pip pip-dinner"></div>
+        <div class="meal-label-col"><div class="meal-label">Cozy</div><div class="meal-time-note">30 min</div></div>
+        <div class="meal-content">
+          <div class="meal-name">Turkey Taco Bowl</div>
+          <div class="meal-detail">Seasoned ground turkey, black beans, brown rice, salsa, avocado, cilantro</div>
+          <div class="meal-macro">~45g protein</div>
+        </div>
+      </div>
+      <div class="meal-slot">
+        <div class="meal-pip pip-dinner"></div>
+        <div class="meal-label-col"><div class="meal-label">Treat</div><div class="meal-time-note">flex night</div></div>
+        <div class="meal-content">
+          <div class="meal-name">Steak, Salmon, or Takeout</div>
+          <div class="meal-detail">Eat something you love — keep it protein-forward and don't stress the rest</div>
+          <div class="meal-macro">~40–50g protein</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SNACK IDEAS -->
+
+  <div class="meal-card">
+    <div class="meal-day-header">
+      <div class="meal-day-name">🍎 Snack Ideas</div>
+      <div class="meal-tag tag-rest">keep one at your desk</div>
+    </div>
+    <div class="meal-slots">
+      <div class="meal-slot">
+        <div class="meal-pip pip-snack"></div>
+        <div class="meal-label-col"><div class="meal-label">Sweet</div></div>
+        <div class="meal-content">
+          <div class="meal-name">Apple + Almond Butter</div>
+          <div class="meal-detail">Sliced apple, 2 tbsp almond or peanut butter — sweet, filling, good fat</div>
+          <div class="meal-macro">~7g protein</div>
+        </div>
+      </div>
+      <div class="meal-slot">
+        <div class="meal-pip pip-snack"></div>
+        <div class="meal-label-col"><div class="meal-label">Sweet</div></div>
+        <div class="meal-content">
+          <div class="meal-name">Cottage Cheese + Fruit</div>
+          <div class="meal-detail">½ cup cottage cheese with pineapple, peach, or mango chunks</div>
+          <div class="meal-macro">~14g protein</div>
+        </div>
+      </div>
+      <div class="meal-slot">
+        <div class="meal-pip pip-snack"></div>
+        <div class="meal-label-col"><div class="meal-label">Savory</div></div>
+        <div class="meal-content">
+          <div class="meal-name">Hard-Boiled Eggs</div>
+          <div class="meal-detail">2 eggs — prep a batch on Sunday, grab from fridge all week</div>
+          <div class="meal-macro">~13g protein</div>
+        </div>
+      </div>
+      <div class="meal-slot">
+        <div class="meal-pip pip-snack"></div>
+        <div class="meal-label-col"><div class="meal-label">Savory</div></div>
+        <div class="meal-content">
+          <div class="meal-name">String Cheese + Turkey Slices</div>
+          <div class="meal-detail">Desk-friendly, no prep, high protein — pair with a piece of fruit</div>
+          <div class="meal-macro">~16g protein</div>
+        </div>
+      </div>
+      <div class="meal-slot">
+        <div class="meal-pip pip-snack"></div>
+        <div class="meal-label-col"><div class="meal-label">Crunchy</div></div>
+        <div class="meal-content">
+          <div class="meal-name">Rice Cakes + Peanut Butter</div>
+          <div class="meal-detail">2 rice cakes, natural peanut butter, optional drizzle of honey</div>
+          <div class="meal-macro">~8g protein</div>
+        </div>
+      </div>
+      <div class="meal-slot">
+        <div class="meal-pip pip-snack"></div>
+        <div class="meal-label-col"><div class="meal-label">Crunchy</div></div>
+        <div class="meal-content">
+          <div class="meal-name">Veggies + Hummus</div>
+          <div class="meal-detail">Baby carrots, cucumber slices, bell pepper strips with individual hummus cups</div>
+          <div class="meal-macro">~6g protein</div>
+        </div>
+      </div>
+      <div class="meal-slot">
+        <div class="meal-pip pip-snack"></div>
+        <div class="meal-label-col"><div class="meal-label">Drink</div></div>
+        <div class="meal-content">
+          <div class="meal-name">Protein Shake</div>
+          <div class="meal-detail">Best gap-filler if you're short on protein for the day — shake with almond milk</div>
+          <div class="meal-macro">~25g protein</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+</div>
+
+<!-- LEGEND (schedule views only) -->
+
+<div class="legend" id="sched-legend">
+  <div class="leg-item"><div class="leg-dot" style="background:#E8735A"></div>Strength</div>
+  <div class="leg-item"><div class="leg-dot" style="background:#5AABA0"></div>Pilates</div>
+  <div class="leg-item"><div class="leg-dot" style="background:#F4A97F"></div>Work</div>
+  <div class="leg-item"><div class="leg-dot" style="background:#D4A84B"></div>Food</div>
+  <div class="leg-item"><div class="leg-dot" style="background:#C9B8D8"></div>Free time</div>
+  <div class="leg-item"><div class="leg-dot" style="background:#8B6FAE"></div>Church</div>
+  <div class="leg-item"><div class="leg-dot" style="background:#A8C89C"></div>Reading</div>
+  <div class="leg-item"><div class="leg-dot" style="background:#B8D4E8"></div>Gaming</div>
+  <div class="leg-item"><div class="leg-dot" style="background:#F2D4C8"></div>Self care</div>
+  <div class="leg-item"><div class="leg-dot" style="background:#C2C8D8"></div>Sleep</div>
+</div>
+
+<div class="note-bar">
+  <strong>AM version</strong> — ~5:30 wake-up on strength days, evenings fully free. <strong>PM version</strong> — easy mornings, go straight from work to gym. <strong>Meals tab</strong> — ~115–130g protein daily across all days. Adjust portions to your appetite.
+</div>
+
+<script>
+  function switchTab(tab, btn) {
+    document.querySelectorAll('.view').forEach(v => v.classList.remove('visible'));
+    document.querySelectorAll('.tab-btn').forEach(b => { b.classList.remove('active'); b.classList.remove('meals-active'); });
+    document.getElementById('view-' + tab).classList.add('visible');
+    if (tab === 'meals') {
+      btn.classList.add('meals-active');
+      document.getElementById('sched-legend').style.display = 'none';
+    } else {
+      btn.classList.add('active');
+      document.getElementById('sched-legend').style.display = 'flex';
+    }
+  }
+
+  function toggleWorkout(el) {
+    el.classList.toggle('open');
+  }
+</script>
+
+</body>
+</html>
