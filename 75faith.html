@@ -1,0 +1,815 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
+<meta name="mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-status-bar-style" content="default"/>
+<meta name="theme-color" content="#FEF8F3"/>
+<meta name="color-scheme" content="light"/>
+<title>75 Faith</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<style>
+  :root {
+    --bg: #FEF8F3;
+    --coral: #E8735A;
+    --coral-light: #F4A97F;
+    --teal: #5AABA0;
+    --teal-light: #C2E0DD;
+    --gold: #D4A84B;
+    --gold-light: #F5E6C0;
+    --lavender: #C9B8D8;
+    --blush: #F2D4C8;
+    --green: #7BBF6A;
+    --purple: #8B6FAE;
+    --dark: #2A1F1A;
+    --muted: #9C8880;
+    --card: #FFFAF6;
+    --border: #EDE0D4;
+    color-scheme: light;
+  }
+
+- { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  html { background: var(–bg); }
+  body {
+  background: var(–bg);
+  font-family: ‘DM Sans’, sans-serif;
+  color: var(–dark);
+  min-height: 100vh;
+  -webkit-text-size-adjust: 100%;
+  padding-bottom: calc(32px + env(safe-area-inset-bottom));
+  }
+
+/* ── HEADER ── */
+.header {
+padding: 52px 20px 28px;
+background: linear-gradient(160deg, #FEF0E8 0%, #FEF8F3 55%);
+border-bottom: 1px solid var(–border);
+text-align: center;
+position: relative;
+overflow: hidden;
+}
+.header::before {
+content: ‘’;
+position: absolute;
+top: -50px; right: -50px;
+width: 200px; height: 200px;
+background: radial-gradient(circle, rgba(244,169,127,0.15) 0%, transparent 70%);
+border-radius: 50%;
+pointer-events: none;
+}
+.header::after {
+content: ‘’;
+position: absolute;
+bottom: -40px; left: -30px;
+width: 160px; height: 160px;
+background: radial-gradient(circle, rgba(90,171,160,0.12) 0%, transparent 70%);
+border-radius: 50%;
+pointer-events: none;
+}
+
+.cross {
+display: inline-block;
+font-size: 22px;
+color: var(–gold);
+margin-bottom: 10px;
+letter-spacing: 3px;
+position: relative;
+z-index: 1;
+}
+
+.header h1 {
+font-family: ‘Playfair Display’, serif;
+font-size: 42px;
+font-weight: 700;
+line-height: 1;
+letter-spacing: -1px;
+position: relative;
+z-index: 1;
+}
+.header h1 em { color: var(–coral); font-style: italic; }
+.header-sub {
+font-size: 13px;
+color: var(–muted);
+font-weight: 300;
+margin-top: 8px;
+line-height: 1.5;
+font-style: italic;
+position: relative;
+z-index: 1;
+}
+.verse {
+margin-top: 14px;
+font-size: 12px;
+color: var(–teal);
+font-weight: 500;
+letter-spacing: 0.04em;
+position: relative;
+z-index: 1;
+}
+
+/* ── PROGRESS SECTION ── */
+.progress-section {
+padding: 20px 16px 0;
+display: flex;
+flex-direction: column;
+gap: 12px;
+}
+
+.stats-row {
+display: flex;
+gap: 10px;
+}
+
+.stat-card {
+flex: 1;
+background: var(–card);
+border: 1px solid var(–border);
+border-radius: 16px;
+padding: 14px 12px;
+text-align: center;
+box-shadow: 0 2px 8px rgba(42,31,26,0.04);
+}
+.stat-number {
+font-family: ‘Playfair Display’, serif;
+font-size: 32px;
+font-weight: 700;
+line-height: 1;
+color: var(–coral);
+}
+.stat-number.teal { color: var(–teal); }
+.stat-number.gold { color: var(–gold); }
+.stat-label {
+font-size: 10px;
+font-weight: 600;
+letter-spacing: 0.1em;
+text-transform: uppercase;
+color: var(–muted);
+margin-top: 4px;
+}
+
+.progress-bar-wrap {
+background: var(–card);
+border: 1px solid var(–border);
+border-radius: 16px;
+padding: 16px;
+box-shadow: 0 2px 8px rgba(42,31,26,0.04);
+}
+.progress-bar-label {
+display: flex;
+justify-content: space-between;
+align-items: center;
+margin-bottom: 10px;
+}
+.progress-bar-label span:first-child {
+font-size: 12px;
+font-weight: 600;
+color: var(–dark);
+letter-spacing: 0.04em;
+}
+.progress-bar-label span:last-child {
+font-size: 12px;
+color: var(–muted);
+font-weight: 300;
+}
+.bar-track {
+height: 8px;
+background: var(–border);
+border-radius: 100px;
+overflow: hidden;
+}
+.bar-fill {
+height: 100%;
+background: linear-gradient(90deg, var(–coral) 0%, var(–coral-light) 100%);
+border-radius: 100px;
+transition: width 0.6s cubic-bezier(0.4,0,0.2,1);
+}
+
+/* ── DOT GRID ── */
+.dot-grid-wrap {
+background: var(–card);
+border: 1px solid var(–border);
+border-radius: 16px;
+padding: 16px;
+box-shadow: 0 2px 8px rgba(42,31,26,0.04);
+}
+.dot-grid-title {
+font-size: 11px;
+font-weight: 600;
+letter-spacing: 0.12em;
+text-transform: uppercase;
+color: var(–muted);
+margin-bottom: 12px;
+}
+.dot-grid {
+display: grid;
+grid-template-columns: repeat(15, 1fr);
+gap: 5px;
+}
+.dot {
+aspect-ratio: 1;
+border-radius: 50%;
+background: var(–border);
+transition: background 0.3s, transform 0.2s;
+cursor: default;
+}
+.dot.complete { background: linear-gradient(135deg, var(–coral) 0%, var(–coral-light) 100%); }
+.dot.today {
+background: var(–gold);
+transform: scale(1.2);
+box-shadow: 0 0 0 2px white, 0 0 0 3px var(–gold);
+}
+
+/* ── TODAY CARD ── */
+.today-section { padding: 16px 16px 0; }
+
+.today-card {
+background: var(–card);
+border: 1px solid var(–border);
+border-radius: 18px;
+overflow: hidden;
+box-shadow: 0 2px 8px rgba(42,31,26,0.04);
+}
+
+.today-header {
+padding: 16px 18px;
+border-bottom: 1px solid var(–border);
+background: linear-gradient(90deg, rgba(253,246,238,0.8) 0%, transparent 100%);
+display: flex;
+align-items: center;
+justify-content: space-between;
+flex-wrap: wrap;
+gap: 8px;
+}
+.today-title {
+font-family: ‘Playfair Display’, serif;
+font-size: 20px;
+font-weight: 700;
+}
+.today-date {
+font-size: 11px;
+color: var(–muted);
+font-weight: 400;
+}
+.complete-badge {
+display: none;
+font-size: 11px;
+font-weight: 700;
+letter-spacing: 0.08em;
+text-transform: uppercase;
+color: var(–green);
+background: #EEF7EC;
+padding: 4px 12px;
+border-radius: 100px;
+}
+.complete-badge.show { display: inline-block; }
+
+/* ── DISCIPLINES ── */
+.discipline {
+display: flex;
+align-items: flex-start;
+gap: 0;
+border-bottom: 1px solid var(–border);
+min-height: 60px;
+cursor: pointer;
+transition: background 0.15s;
+-webkit-tap-highlight-color: transparent;
+user-select: none;
+-webkit-user-select: none;
+touch-action: manipulation;
+}
+.discipline:last-child { border-bottom: none; }
+.discipline:active { background: #FDF5F0; }
+
+.disc-pip { width: 4px; flex-shrink: 0; align-self: stretch; }
+
+.disc-check {
+width: 52px;
+flex-shrink: 0;
+display: flex;
+align-items: center;
+justify-content: center;
+padding: 16px 0;
+}
+.check-circle {
+width: 26px;
+height: 26px;
+border-radius: 50%;
+border: 2px solid var(–border);
+display: flex;
+align-items: center;
+justify-content: center;
+transition: all 0.22s cubic-bezier(0.4,0,0.2,1);
+background: white;
+flex-shrink: 0;
+}
+.check-circle svg { display: none; }
+.discipline.checked .check-circle {
+background: linear-gradient(135deg, var(–coral) 0%, var(–coral-light) 100%);
+border-color: transparent;
+box-shadow: 0 3px 10px rgba(232,115,90,0.3);
+}
+.discipline.checked .check-circle svg { display: block; }
+
+.disc-content { flex: 1; padding: 14px 14px 14px 4px; }
+.disc-title { font-size: 14px; font-weight: 500; line-height: 1.3; color: var(–dark); }
+.disc-note { font-size: 12px; color: var(–muted); font-weight: 300; line-height: 1.45; margin-top: 2px; }
+.discipline.checked .disc-title { color: var(–muted); text-decoration: line-through; text-decoration-color: var(–border); }
+
+/* Book selector */
+.book-select-wrap { margin-top: 8px; }
+.book-select {
+width: 100%;
+padding: 8px 12px;
+border: 1.5px solid var(–border);
+border-radius: 10px;
+background: var(–bg);
+font-family: ‘DM Sans’, sans-serif;
+font-size: 12px;
+color: var(–dark);
+-webkit-appearance: none;
+appearance: none;
+cursor: pointer;
+background-image: url(“data:image/svg+xml,%3Csvg xmlns=‘http://www.w3.org/2000/svg’ width=‘12’ height=‘8’ viewBox=‘0 0 12 8’%3E%3Cpath d=‘M1 1l5 5 5-5’ stroke=’%239C8880’ stroke-width=‘1.5’ fill=‘none’ stroke-linecap=‘round’/%3E%3C/svg%3E”);
+background-repeat: no-repeat;
+background-position: right 12px center;
+padding-right: 32px;
+}
+.discipline.checked .book-select { opacity: 0.5; }
+
+/* ── RESET BUTTON ── */
+.reset-wrap {
+padding: 20px 16px 0;
+display: flex;
+justify-content: center;
+}
+.reset-btn {
+padding: 10px 24px;
+border-radius: 100px;
+border: 1.5px solid var(–border);
+background: transparent;
+font-family: ‘DM Sans’, sans-serif;
+font-size: 12px;
+font-weight: 500;
+color: var(–muted);
+cursor: pointer;
+touch-action: manipulation;
+transition: all 0.15s;
+}
+.reset-btn:active { background: var(–border); }
+
+/* ── CONFETTI ── */
+.confetti-container {
+position: fixed;
+top: 0; left: 0;
+width: 100%; height: 100%;
+pointer-events: none;
+z-index: 999;
+overflow: hidden;
+}
+.confetti-piece {
+position: absolute;
+top: -10px;
+width: 8px;
+height: 8px;
+border-radius: 50%;
+animation: confettiFall linear forwards;
+}
+@keyframes confettiFall {
+0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+100% { transform: translateY(110vh) rotate(720deg); opacity: 0; }
+}
+
+/* ── CELEBRATION ── */
+.celebration {
+display: none;
+margin: 16px 16px 0;
+background: linear-gradient(135deg, #FEF0E8 0%, #E8F5F4 100%);
+border: 1px solid var(–blush);
+border-radius: 16px;
+padding: 20px;
+text-align: center;
+}
+.celebration.show { display: block; }
+.celebration-title {
+font-family: ‘Playfair Display’, serif;
+font-size: 20px;
+font-weight: 700;
+color: var(–coral);
+margin-bottom: 6px;
+}
+.celebration-verse {
+font-size: 13px;
+color: var(–muted);
+font-style: italic;
+line-height: 1.6;
+}
+
+/* ── STREAK HISTORY ── */
+.history-section {
+padding: 16px 16px 0;
+}
+.section-label {
+font-size: 11px;
+font-weight: 600;
+letter-spacing: 0.14em;
+text-transform: uppercase;
+color: var(–muted);
+margin-bottom: 10px;
+padding-left: 2px;
+}
+</style>
+
+</head>
+<body>
+
+<div class="header">
+  <div class="cross">✦ ✦ ✦</div>
+  <h1><em>75</em> Faith</h1>
+  <p class="header-sub">75 days of intentional discipleship</p>
+  <p class="verse">"Draw near to God, and he will draw near to you." — James 4:8</p>
+</div>
+
+<!-- STATS -->
+
+<div class="progress-section">
+  <div class="stats-row">
+    <div class="stat-card">
+      <div class="stat-number" id="dayCount">0</div>
+      <div class="stat-label">Day</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-number teal" id="streakCount">0</div>
+      <div class="stat-label">Streak</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-number gold" id="daysLeft">75</div>
+      <div class="stat-label">Left</div>
+    </div>
+  </div>
+
+  <div class="progress-bar-wrap">
+    <div class="progress-bar-label">
+      <span>Progress</span>
+      <span id="progressPct">0 of 75 days complete</span>
+    </div>
+    <div class="bar-track">
+      <div class="bar-fill" id="barFill" style="width:0%"></div>
+    </div>
+  </div>
+
+  <div class="dot-grid-wrap">
+    <div class="dot-grid-title">75 Days</div>
+    <div class="dot-grid" id="dotGrid"></div>
+  </div>
+</div>
+
+<!-- CELEBRATION -->
+
+<div class="celebration" id="celebration">
+  <div class="celebration-title">Day Complete! ✦</div>
+  <div class="celebration-verse" id="celebVerse"></div>
+</div>
+
+<!-- TODAY'S DISCIPLINES -->
+
+<div class="today-section">
+  <div class="today-card">
+    <div class="today-header">
+      <div>
+        <div class="today-title">Today's Disciplines</div>
+        <div class="today-date" id="todayDate"></div>
+      </div>
+      <div class="complete-badge" id="completeBadge">All Done ✦</div>
+    </div>
+
+```
+<!-- 1. Scripture AM -->
+<div class="discipline" id="d-scripture1" onclick="toggleDisc('scripture1')">
+  <div class="disc-pip" style="background:var(--coral)"></div>
+  <div class="disc-check">
+    <div class="check-circle">
+      <svg width="13" height="10" viewBox="0 0 13 10" fill="none">
+        <path d="M1.5 5L5 8.5L11.5 1.5" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </div>
+  </div>
+  <div class="disc-content">
+    <div class="disc-title">Scripture — Morning</div>
+    <div class="disc-note">Min. 10 minutes · First session of the day</div>
+  </div>
+</div>
+
+<!-- 2. Scripture PM -->
+<div class="discipline" id="d-scripture2" onclick="toggleDisc('scripture2')">
+  <div class="disc-pip" style="background:var(--coral-light)"></div>
+  <div class="disc-check">
+    <div class="check-circle">
+      <svg width="13" height="10" viewBox="0 0 13 10" fill="none">
+        <path d="M1.5 5L5 8.5L11.5 1.5" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </div>
+  </div>
+  <div class="disc-content">
+    <div class="disc-title">Scripture — Evening</div>
+    <div class="disc-note">Min. 10 minutes · Second separate session</div>
+  </div>
+</div>
+
+<!-- 3. Prayer -->
+<div class="discipline" id="d-prayer" onclick="toggleDisc('prayer')">
+  <div class="disc-pip" style="background:var(--teal)"></div>
+  <div class="disc-check">
+    <div class="check-circle">
+      <svg width="13" height="10" viewBox="0 0 13 10" fill="none">
+        <path d="M1.5 5L5 8.5L11.5 1.5" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </div>
+  </div>
+  <div class="disc-content">
+    <div class="disc-title">Prayer</div>
+    <div class="disc-note">Min. 15 minutes · Intentional, dedicated time</div>
+  </div>
+</div>
+
+<!-- 4. No spiritual junk food -->
+<div class="discipline" id="d-guard" onclick="toggleDisc('guard')">
+  <div class="disc-pip" style="background:var(--lavender)"></div>
+  <div class="disc-check">
+    <div class="check-circle">
+      <svg width="13" height="10" viewBox="0 0 13 10" fill="none">
+        <path d="M1.5 5L5 8.5L11.5 1.5" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </div>
+  </div>
+  <div class="disc-content">
+    <div class="disc-title">Guard Your Heart</div>
+    <div class="disc-note">No content that pulls you from God · toxic media, gossip, negativity</div>
+  </div>
+</div>
+
+<!-- 5. Journal / Verse -->
+<div class="discipline" id="d-journal" onclick="toggleDisc('journal')">
+  <div class="disc-pip" style="background:var(--gold)"></div>
+  <div class="disc-check">
+    <div class="check-circle">
+      <svg width="13" height="10" viewBox="0 0 13 10" fill="none">
+        <path d="M1.5 5L5 8.5L11.5 1.5" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </div>
+  </div>
+  <div class="disc-content">
+    <div class="disc-title">Journal or Memorize a Verse</div>
+    <div class="disc-note">Write what God is teaching you · or commit a verse to memory</div>
+  </div>
+</div>
+
+<!-- 6. Service -->
+<div class="discipline" id="d-serve" onclick="toggleDisc('serve')">
+  <div class="disc-pip" style="background:var(--green)"></div>
+  <div class="disc-check">
+    <div class="check-circle">
+      <svg width="13" height="10" viewBox="0 0 13 10" fill="none">
+        <path d="M1.5 5L5 8.5L11.5 1.5" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </div>
+  </div>
+  <div class="disc-content">
+    <div class="disc-title">Serve or Give</div>
+    <div class="disc-note">One intentional act of service, generosity, or encouragement</div>
+  </div>
+</div>
+
+<!-- 7. Book Reading -->
+<div class="discipline" id="d-book" onclick="toggleDisc('book')">
+  <div class="disc-pip" style="background:var(--purple)"></div>
+  <div class="disc-check">
+    <div class="check-circle">
+      <svg width="13" height="10" viewBox="0 0 13 10" fill="none">
+        <path d="M1.5 5L5 8.5L11.5 1.5" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </div>
+  </div>
+  <div class="disc-content">
+    <div class="disc-title">Read a Christian Book</div>
+    <div class="disc-note">Min. 10 pages · tap to select your book</div>
+    <div class="book-select-wrap" onclick="event.stopPropagation()">
+      <select class="book-select" id="bookSelect" onchange="saveBook()">
+        <option value="">— select your book —</option>
+        <option value="awe">The Awe of God</option>
+        <option value="counter">Counter Culture</option>
+        <option value="parables">Parables</option>
+        <option value="prayfirst">Pray First</option>
+        <option value="gentle">Gentle and Lowly</option>
+        <option value="radical">Radical</option>
+      </select>
+    </div>
+  </div>
+</div>
+```
+
+  </div>
+</div>
+
+<!-- RESET -->
+
+<div class="reset-wrap">
+  <button class="reset-btn" onclick="confirmReset()">Reset today's checks</button>
+</div>
+
+<div class="confetti-container" id="confettiContainer"></div>
+
+<script>
+  const DISCIPLINES = ['scripture1','scripture2','prayer','guard','journal','serve','book'];
+  const VERSES = [
+    '"His mercies are new every morning." — Lam. 3:23',
+    '"Be still and know that I am God." — Psalm 46:10',
+    '"I can do all things through Christ who strengthens me." — Phil. 4:13',
+    '"Trust in the Lord with all your heart." — Prov. 3:5',
+    '"The Lord is my shepherd; I shall not want." — Psalm 23:1',
+    '"For I know the plans I have for you, declares the Lord." — Jer. 29:11',
+    '"Come to me, all who are weary, and I will give you rest." — Matt. 11:28',
+  ];
+
+  function getState() {
+    try { return JSON.parse(localStorage.getItem('75faith') || '{}'); }
+    catch(e) { return {}; }
+  }
+  function saveState(s) {
+    localStorage.setItem('75faith', JSON.stringify(s));
+  }
+
+  function getTodayKey() {
+    return new Date().toISOString().slice(0,10);
+  }
+
+  function init() {
+    const state = getState();
+    const today = getTodayKey();
+
+    // Set date display
+    document.getElementById('todayDate').textContent = new Date().toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric'});
+
+    // Restore today's checks
+    const todayChecks = state.checks?.[today] || {};
+    DISCIPLINES.forEach(id => {
+      if (todayChecks[id]) {
+        document.getElementById('d-' + id).classList.add('checked');
+      }
+    });
+
+    // Restore book selection
+    if (state.currentBook) {
+      document.getElementById('bookSelect').value = state.currentBook;
+    }
+
+    updateStats();
+    buildDotGrid();
+    checkAllDone(false);
+  }
+
+  function toggleDisc(id) {
+    const el = document.getElementById('d-' + id);
+    el.classList.toggle('checked');
+
+    const state = getState();
+    const today = getTodayKey();
+    if (!state.checks) state.checks = {};
+    if (!state.checks[today]) state.checks[today] = {};
+    state.checks[today][id] = el.classList.contains('checked');
+    saveState(state);
+
+    updateStats();
+    checkAllDone(true);
+  }
+
+  function saveBook() {
+    const val = document.getElementById('bookSelect').value;
+    const state = getState();
+    state.currentBook = val;
+    saveState(state);
+  }
+
+  function checkAllDone(withCelebration) {
+    const state = getState();
+    const today = getTodayKey();
+    const todayChecks = state.checks?.[today] || {};
+    const allDone = DISCIPLINES.every(id => todayChecks[id]);
+
+    document.getElementById('completeBadge').classList.toggle('show', allDone);
+    const cel = document.getElementById('celebration');
+
+    if (allDone) {
+      cel.classList.add('show');
+      const verse = VERSES[Math.floor(Math.random() * VERSES.length)];
+      document.getElementById('celebVerse').textContent = verse;
+      if (withCelebration) launchConfetti();
+
+      // Mark day complete
+      if (!state.completedDays) state.completedDays = [];
+      if (!state.completedDays.includes(today)) {
+        state.completedDays.push(today);
+        saveState(state);
+        updateStats();
+        buildDotGrid();
+      }
+    } else {
+      cel.classList.remove('show');
+    }
+  }
+
+  function updateStats() {
+    const state = getState();
+    const completed = (state.completedDays || []).length;
+    document.getElementById('dayCount').textContent = completed;
+    document.getElementById('daysLeft').textContent = Math.max(0, 75 - completed);
+    document.getElementById('progressPct').textContent = completed + ' of 75 days complete';
+    document.getElementById('barFill').style.width = (completed / 75 * 100) + '%';
+
+    // Streak calc
+    const days = (state.completedDays || []).slice().sort();
+    let streak = 0;
+    const today = getTodayKey();
+    let check = today;
+    for (let i = 0; i < 75; i++) {
+      if (days.includes(check)) {
+        streak++;
+        const d = new Date(check);
+        d.setDate(d.getDate() - 1);
+        check = d.toISOString().slice(0,10);
+      } else break;
+    }
+    document.getElementById('streakCount').textContent = streak;
+  }
+
+  function buildDotGrid() {
+    const state = getState();
+    const completed = state.completedDays || [];
+    const today = getTodayKey();
+    const grid = document.getElementById('dotGrid');
+    grid.innerHTML = '';
+    for (let i = 0; i < 75; i++) {
+      const dot = document.createElement('div');
+      dot.className = 'dot';
+      // Figure out what date this dot represents
+      // Dots fill in order from start date or just by index
+      const startDate = state.startDate || today;
+      const d = new Date(startDate);
+      d.setDate(d.getDate() + i);
+      const dk = d.toISOString().slice(0,10);
+      if (completed.includes(dk)) dot.classList.add('complete');
+      else if (dk === today) dot.classList.add('today');
+      grid.appendChild(dot);
+    }
+    // Save start date
+    if (!state.startDate) {
+      const s = getState();
+      s.startDate = today;
+      saveState(s);
+    }
+  }
+
+  function launchConfetti() {
+    const container = document.getElementById('confettiContainer');
+    const colors = ['#E8735A','#F4A97F','#5AABA0','#D4A84B','#C9B8D8','#7BBF6A','#F2D4C8'];
+    container.innerHTML = '';
+    for (let i = 0; i < 60; i++) {
+      const piece = document.createElement('div');
+      piece.className = 'confetti-piece';
+      piece.style.left = Math.random() * 100 + 'vw';
+      piece.style.background = colors[Math.floor(Math.random() * colors.length)];
+      piece.style.width = (Math.random() * 8 + 4) + 'px';
+      piece.style.height = (Math.random() * 8 + 4) + 'px';
+      piece.style.borderRadius = Math.random() > 0.5 ? '50%' : '2px';
+      piece.style.animationDuration = (Math.random() * 2 + 1.5) + 's';
+      piece.style.animationDelay = (Math.random() * 0.8) + 's';
+      container.appendChild(piece);
+    }
+    setTimeout(() => container.innerHTML = '', 4000);
+  }
+
+  function confirmReset() {
+    if (confirm('Reset today\'s checkboxes?')) {
+      const state = getState();
+      const today = getTodayKey();
+      if (state.checks) state.checks[today] = {};
+      // Remove from completed days
+      if (state.completedDays) {
+        state.completedDays = state.completedDays.filter(d => d !== today);
+      }
+      saveState(state);
+      DISCIPLINES.forEach(id => document.getElementById('d-' + id).classList.remove('checked'));
+      document.getElementById('completeBadge').classList.remove('show');
+      document.getElementById('celebration').classList.remove('show');
+      updateStats();
+      buildDotGrid();
+    }
+  }
+
+  init();
+</script>
+
+</body>
+</html>
